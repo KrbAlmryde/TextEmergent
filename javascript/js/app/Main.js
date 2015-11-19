@@ -13,7 +13,7 @@ var WordGroup;
 var alphabet
 
 var key = false;
-
+var UnitSphere;
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Main control functions
@@ -27,6 +27,7 @@ function Start() {
 function onCreate() {
     initScene();
     initLetterMaterials();
+    // addLotsOfLetters();
 }
 
 function onFrame() {
@@ -44,6 +45,9 @@ function onReshape() {
 
 function onRender() {
     controls.update();
+    for (var i = 0; i < LetterGroup.children.length; i++) {
+        LetterGroup.children[i].run();
+    };
     renderer.render(scene, camera);
 };
 
@@ -102,7 +106,7 @@ function initScene() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 
     console.log("initCamera()");
-    camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.001, 4);
+    camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.001, 10);
     {
         controls = new THREE.TrackballControls(camera, renderer.domElement); {
             controls.rotateSpeed = 4.0;
@@ -201,11 +205,20 @@ function makeLetterTexture( letter ) {
 function addLetter() {
     var fontsize = 18;
     var l = alphabet[ Math.floor( Math.random() * alphabet.length ) ];
-    var sprite = new THREE.Sprite( LetterMaterials[ l ] );
-    sprite.name = l;
+    var sprite = new Letter( l );
+    // var sprite = new THREE.Sprite( LetterMaterials[ l ] );
+    // sprite.name = l;
     sprite.position.set(Math.random() * 4 - 2, Math.random() * 4 - 2, Math.random() * 4 - 2);
     LetterGroup.add(sprite);
     return l;
+}
+
+function addLotsOfLetters() {
+    var count = Math.floor(Math.random() * 200);
+    console.log("Making", count, "letters");
+    for (var i = 0; i < count; i++) {
+        addLetter();
+    };
 }
 
 

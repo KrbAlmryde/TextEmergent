@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"ma",
+				"makeCanvasLetter"
+			],
+			[
+				"initLe",
+				"initLetterMaterials"
+			],
+			[
 				"ran",
 				"randHex"
 			],
@@ -323,6 +331,73 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "examples/Text/js/Link.js",
+			"settings":
+			{
+				"buffer_size": 3897,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "\n\nvar Letter = function( letter, material ) {\n    // Set our scope and inheritance\n    var scope = this,\n    THREE.Sprite.call(this, material);\n\n    // Setup basic linguistic components\n    var vowels = 'aeiouy',\n    this.char = letter.charAt(0);\n    this.isVowel = vowels.include( this.char ) ? true : false\n\n    // Setup our navigation variables\n    var vector = new THREE.Vector3(),\n    _width = 4, _height = 4, _depth = 2, _goal, _neighborhoodRadius = 1,\n    _maxSpeed = 0.4, _maxSteerForce = 0.01, _wanderTheta = 0;\n\n    // position comes free through inheriting from THREE.Sprite\n    this.velocity = new THREE.Vector3();\n    this.acceleration = new THREE.Vector3();\n\n\n\n    //////////////////////////////////////////////////////////////////////\n    //   Begin Method definitions\n    //\n    //  Note: Most of this logic comes\n    //  from the THREE.js examples page found:\n    //  http://threejs.org/examples/#canvas_geometry_birds\n    //////////////////////////////////////////////////////////////////////\n    this.run = function() {\n        \n    }\n\n\n    this.setGoal = function( target ) {\n        _goal = target;\n    }\n\n    this.setAvoidWalls = function ( value ) {\n\n        _avoidWalls = value;\n\n    };\n\n    this.setWorldSize = function ( width, height, depth ) {\n\n        _width = width;\n        _height = height;\n        _depth = depth;\n\n    };\n\n\n}\n\nLetter.prototype = Object.create( THREE.Sprite.prototype );\nLetter.prototype.constructor = Letter;\n\n\n\nvar Word = function( letters, material )\n{\n    THREE.Sprite.call(this, params);\n\n    var scope = this;\n    this.velocity = new THREE.Vector3();\n    this.letters = [];\n    this.duration = Date.now();\n    this.isProto = true; // Is considered a proto-word until otherwise noted...\n    this.isFailing = false;  // Determines if its failing as a word or not.\n}\n\nWord.prototype = Object.create( THREE.Sprite.prototype );\nWord.prototype.constructor = Word;\n",
+			"file": "javascript/js/app/TextAgents.js",
+			"file_size": 1869,
+			"file_write_time": 130923910540000000,
+			"settings":
+			{
+				"buffer_size": 1913,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "javascript/index.html",
+			"settings":
+			{
+				"buffer_size": 1463,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/krbalmryde/.bash_aliases",
+			"settings":
+			{
+				"buffer_size": 8100,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/krbalmryde/.bash_functions",
+			"settings":
+			{
+				"buffer_size": 22282,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "javascript/js/app/Main.js",
+			"settings":
+			{
+				"buffer_size": 8064,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/krbalmryde/Dropbox/Class-projects/cs526/Boid/js/Boid.js",
+			"settings":
+			{
+				"buffer_size": 6525,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "examples/GPGPUBirds/shaders/birds-vs.glsl",
+			"settings":
+			{
+				"buffer_size": 1353,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -331,10 +406,22 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 339.0,
-		"last_filter": "glsl",
+		"height": 400.0,
+		"last_filter": "inst",
 		"selected_items":
 		[
+			[
+				"inst",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"col",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"ja",
+				"Set Syntax: JavaScript"
+			],
 			[
 				"glsl",
 				"Set Syntax: GLSL"
@@ -344,20 +431,12 @@
 				"Set Syntax: GLSL"
 			],
 			[
-				"ja",
-				"Set Syntax: JavaScript"
-			],
-			[
 				"html",
 				"Set Syntax: HTML"
 			],
 			[
 				"hex",
 				"Hex Viewer: Toggle Hex View"
-			],
-			[
-				"inst",
-				"Package Control: Install Package"
 			],
 			[
 				"py",
@@ -705,16 +784,19 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/examples/Text",
+		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/examples/Text/js",
+		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/examples/GPGPUBirds",
+		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/examples/GPGPUBirds/shaders",
 		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/javascript",
-		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/javascript/iterations",
 		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/javascript/js",
+		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/javascript/js/app",
 		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/javascript/js/lib"
 	],
 	"file_history":
 	[
-		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/javascript/index.html",
+		"/Users/krbalmryde/.bash_profile",
 		"/Users/krbalmryde/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/javascript/index.html",
 		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/javascript/js/lib/Source Code Pro Black_Regular.js",
 		"/Users/krbalmryde/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
 		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/examples/Text/examples/fade/shaders/fs-text.glsl",
@@ -725,7 +807,6 @@
 		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/examples/Text/examples/fade/index.html",
 		"/Users/krbalmryde/.bash_aliases",
 		"/Users/krbalmryde/.bash_functions",
-		"/Users/krbalmryde/.bash_profile",
 		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/examples/GPGPUBirds/index.html",
 		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/examples/GPGPUBirds/main.js",
 		"/Users/krbalmryde/Dropbox/Code-Projects/EVL/TextEmergent/examples/GPGPUBirds/shaders/birds-fs.glsl",
@@ -860,6 +941,39 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"type",
+			"makeLetterTexture",
+			"500",
+			"8 - 4",
+			"makeLetterTexture",
+			"position",
+			"context",
+			"alphaMaterials",
+			"alphabetGroup",
+			"-4",
+			"ascii",
+			"message",
+			"0",
+			"255",
+			"1.0",
+			"255",
+			"0",
+			"createTextSprite",
+			"arguments",
+			"Letter",
+			"Bird",
+			"rotation",
+			"1",
+			"10",
+			"camera",
+			"renderer",
+			"alphabetSoup",
+			"scene",
+			"onCreate",
+			"cube",
+			"this.font",
+			"font",
+			"UbuntuMono",
 			"if",
 			" ",
 			"font",
@@ -954,40 +1068,7 @@
 			"             ",
 			"            ",
 			"           ",
-			"          ",
-			"         ",
-			"u.",
-			"u",
-			"50",
-			"350",
-			"600",
-			"geometry",
-			" =",
-			"250",
-			"45",
-			"250",
-			"100",
-			"500",
-			"10",
-			"200",
-			"plane",
-			"p.",
-			"10000",
-			"200",
-			"-200",
-			"10,",
-			"10",
-			"100000",
-			"Math.random() *",
-			"10000",
-			"1000",
-			"360",
-			"180",
-			"360",
-			"M_PI",
-			"j",
-			"n",
-			"controls"
+			"          "
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1050,8 +1131,265 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "examples/Text/js/Link.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3897,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								323,
+								323
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "javascript/js/app/TextAgents.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1913,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1047,
+								1047
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "javascript/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1463,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								115,
+								115
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/Users/krbalmryde/.bash_aliases",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8100,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/Users/krbalmryde/.bash_functions",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 22282,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12909,
+								12909
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6869.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "javascript/js/app/Main.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8064,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6695,
+								6699
+							],
+							[
+								7738,
+								7742
+							],
+							[
+								7832,
+								7836
+							],
+							[
+								7934,
+								7938
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3898.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 6,
+					"file": "/Users/krbalmryde/Dropbox/Class-projects/cs526/Boid/js/Boid.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6525,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "examples/GPGPUBirds/shaders/birds-vs.glsl",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 1353,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/OpenGL Shading Language (GLSL)/GLSL.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 399.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -1072,6 +1410,12 @@
 				0,
 				1,
 				1
+			],
+			[
+				0,
+				1,
+				1,
+				2
 			]
 		],
 		"cols":
@@ -1082,6 +1426,7 @@
 		"rows":
 		[
 			0.0,
+			0.824812073776,
 			1.0
 		]
 	},
@@ -1434,7 +1779,7 @@
 		[
 			[
 				"",
-				"~/Dropbox/Code-Projects/EVL/DarkSkyVis/DarkSkyVis.sublime-project"
+				"~/Dropbox/Code-Projects/LTG/wallcology/interfaces/visualization/wallcology.sublime-project"
 			]
 		],
 		"width": 380.0
