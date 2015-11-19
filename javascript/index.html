@@ -1,0 +1,64 @@
+<html>
+
+<head>
+    <title>Text-Emergent</title>
+    <style>
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+
+    canvas {
+        width: 100%;
+        height: 100%
+    }
+
+    #text {
+        position: absolute;
+        top: -500px;
+    }
+
+    .char {
+        width: 130px;
+    }
+
+    @-webkit-keyframes blink { 50% { visibility: hidden; } }
+    @-moz-keyframes blink { 50% { visibility: hidden; } }
+    @keyframes blink { 50% { visibility: hidden; } }
+
+    #cursor {
+        -webkit-animation: blink 0.5s alternate steps(1) infinite;
+        -moz-animation: blink 0.5s alternate steps(1) infinite;
+        animation: blink 0.5s alternate steps(1) infinite;
+        display: inline-block;
+        width: 1px;
+        height: 130px;
+        background-color: #222;
+    }
+
+    @media all and ( max-width: 640px ) {
+        .char {
+            width: 70px;
+        }
+        #cursor {
+            height: 70px;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <!-- Our Container -->
+    <div id="Visualization"></div>
+    <textarea id="text"></textarea>
+
+    <!-- External Libraries -->
+    <script src="js/lib/three.min.js" type="text/javascript" ></script>
+    <script src="js/lib/TrackballControls.js" type="text/javascript" ></script>
+
+    <!-- Application Libs -->
+    <!-- <script src="js/app/TextAgents.js" type="text/javascript" ></script> -->
+    <script src="js/app/Main.js" type="text/javascript" onload="Start()" ></script>
+</body>
+
+</html>

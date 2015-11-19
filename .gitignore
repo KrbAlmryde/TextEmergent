@@ -1,0 +1,8 @@
+*.class
+*.nii*
+*.pdf
+*.pyc
+*.o
+*.gz
+*.zip
+*.log

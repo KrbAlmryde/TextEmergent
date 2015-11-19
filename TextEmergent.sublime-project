@@ -1,0 +1,26 @@
+{
+	"folders":
+	[
+
+        {
+            "path": "./examples",
+            "name": "EXAMPLES"
+        },
+        {
+            "path": "./examples/Text",
+            "name": "Cabbibo/Text"
+        },
+        {
+            "path": "./examples/GPGPUBirds",
+            "name": "GPGPU/Birds"
+        },
+        {
+            "path": "./javascript",
+            "name": "TextEmergent"
+        },
+        {
+            "path": "./javascript/js/app"
+        }
+
+	]
+}
