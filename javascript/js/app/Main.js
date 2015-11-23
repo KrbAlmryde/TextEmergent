@@ -7,8 +7,11 @@
 var scene, camera, renderer;
 var controls, clock, container;
 
-var LetterGroup, LetterMaterials;
-var WordGroup;
+var LetterMaterials;
+var LetterGroup, OtherGroup;
+
+var PositionMatrix; // For the position of the letters
+
 
 var alphabet
 
@@ -30,7 +33,8 @@ function onCreate() {
     initScene();
     initLetterMaterials();
     // addLotsOfLetters();
-    addPassage();
+    // addPassage();
+    createParticles();
 }
 
 function onFrame() {
@@ -61,11 +65,6 @@ function onMouseClick( event ) {
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     console.log(mouse.x, mouse.y, event.clientX, event.clientY);
-
-    if (key) {
-        console.log( addLetter() );
-    }
-
 }
 
 
@@ -82,12 +81,10 @@ function onKeyPress( event ) {
     console.log(event.keyCode);
     switch(event.keyCode) {
         case 49: // 1
-            camera.position.z += 0.1
-            console.log(camera.position.z);
+            addLetter();
             break;
         case 50: // 2
-            camera.position.z -= 0.1
-            console.log(camera.position.z);
+            addLotsOfLetters();
             break;
         case 51: //
             key = !key;
@@ -128,23 +125,25 @@ function addPassage() {
 
     for (var i = 0; i < passage.length; i++) {
         var l = passage[i];
-        var sprite = new Letter( l );
-        // sprite.position.set(Math.random() * 10 - 5, Math.random() * 10 - 5, Math.random() * 10 - 5);
-        // LetterGroup.add(sprite);
-
+        new Letter( l );
     };
 }
 
-createParticles = function(string) {
 
+// This function was slightly modified form its original source, gratiously
+// 'borrowed' from http://cabbi.bo/Text/
+createParticles = function() {
+    PositionMatrix = [];
 
-    var letterWidth = 2.; // start with this by default
+    var string = yoda.quote();
+
+    var letterWidth = 0.05; // start with this by default
     var lineLength = 80; //
 
-    var lineHeight = letterWidth * 2.4;
+    var lineHeight = letterWidth * 2;
     var width = letterWidth * lineLength;
 
-    var particles = [];
+    var linePosition = new THREE.Vector3();
 
     var lineArray = string.split("\n");
     var counter = [0, 0]; // keeps track of where we are
@@ -153,7 +152,6 @@ createParticles = function(string) {
 
         counter[0] = 0;
         counter[1]++;
-
 
         var wordArray = lineArray[i].split(" ");
 
@@ -172,7 +170,7 @@ createParticles = function(string) {
 
             // Push a new particle for each place
             for (var k = 0; k < letters.length; k++) {
-                particles.push([letters[k], counter[0], counter[1]]);
+                PositionMatrix.push([letters[k], counter[0], counter[1]]);
                 counter[0]++;
             }
 
@@ -180,10 +178,16 @@ createParticles = function(string) {
         }
     }
 
-    particles.numberOfLines = counter[1];
+    PositionMatrix.forEach(function( letter ){
+        var temp = new Letter(letter[0]);
+        linePosition.x = (letterWidth * letter[1]) - 1;
+        linePosition.y = -lineHeight * (letter[2] - 1);
+        linePosition.z = 3.5;
+        temp.position.copy(linePosition); // Hopefully this works?!
+        console.log(letter, temp.position);
+    })
 
-    return particles;
-
+    // return particles;
 }
 
 
@@ -191,11 +195,13 @@ function UpdateScene() {
     resetGrid();
     updateGrid();
     // countObjects();
-    for (var i = 0; i < LetterGroup.children.length; i++) {
-        if (!key)
+    for (var i = 0, j = 0; i < LetterGroup.children.length; j++, i++) {
+        if (!key) {
             LetterGroup.children[i].run();
+            if (j < OtherGroup.children.length)
+                OtherGroup.children[j].run();
+        }
     };
-
 }
 
 
@@ -213,7 +219,6 @@ function resetGrid( xdim, ydim, zdim) {
             Grid[x].push( new Array() )
             for (var z = 0; z < zdim; z++) {
                 Grid[x][y].push(new Array( ));
-                // Grid[x][y][z].push(Math.floor(Math.random() * 10 - 5));
             };
 
         };
@@ -244,28 +249,38 @@ function updateGrid(offset) {
         for (var j = 0; j < Grid[i].length; j++) {
             for (var k = 0; k < Grid[i][j].length; k++) {
                 var cell = Grid[i][j][k];
-                if (cell.length >= LetterGroup.children.length/3) {
-                    console.log("Thats a lot of letters...", cell.length);
-                };
-                cell.forEach(function( t ) {
-                    cell.forEach(function( o ) {
-                        if (t !== o) {
-                            var tObj = LetterGroup.getObjectById(t),
-                                oObj = LetterGroup.getObjectById(o);
-
-                            var dist = tObj.position.distanceTo(oObj.position)
-
-                            if (dist <= 0.01) {
-                                console.log("We have a Hit!!!",tObj.char, oObj.char);
-
-                            };
-                        }
-                    })
-                })
+                if (cell.length < 10)
+                    checkForCollisions( cell );
+//                 else
+                    // console.log("Whoa...Thats a lot of letters...", cell.length);
             };
         };
     };
 }
+
+
+function checkForCollisions( cell ) {
+    cell.forEach(function( t ) {
+        cell.forEach(function( o ) {
+            if (t !== o) {
+                var tObj = LetterGroup.getObjectById(t),
+                    oObj = LetterGroup.getObjectById(o);
+
+                var dist = tObj.position.distanceTo(oObj.position)
+
+                if (dist <= 0.01) {
+                    console.log("We have a Hit!!!",tObj.char, oObj.char);
+                    generateWord(tObj, oObj); // Order matters!
+                };
+            }
+        })
+    })
+}
+
+function generateWord( obj1, obj2 ) {
+
+}
+
 
 function countObjects() {
     var total = 0

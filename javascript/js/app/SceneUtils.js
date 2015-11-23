@@ -12,7 +12,7 @@ function initScene() {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10);
     // camera = new THREE.OrthographicCamera(window.innerWidth / -500, window.innerWidth / 500, window.innerHeight / 500, window.innerHeight / - 500, -100, 100)
     {
-        camera.position.set(-0, -0, -5);
+        camera.position.set(-0, -0, 5);
         controls = new THREE.TrackballControls(camera, renderer.domElement); {
             controls.rotateSpeed = 4.0;
             controls.zoomSpeed = 1.5;
@@ -38,6 +38,7 @@ function initScene() {
 
     mouse = new THREE.Vector2();
     LetterGroup = new THREE.Object3D();
+    OtherGroup = new THREE.Object3D();
 
     window.addEventListener('resize', onReshape, false);
     window.addEventListener('mousemove', onMouseMove, false);
@@ -46,12 +47,13 @@ function initScene() {
     // window.addEventListener('keydown', onKeyPress, false);
 
     scene.add(LetterGroup);
+    scene.add(OtherGroup);
 }
 
 
 function initLetterMaterials() {
     LetterMaterials = {};
-    alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,?-:; ";
+    alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,?-:;";
 
     for (var i in alphabet) {
         var letter = alphabet[i];

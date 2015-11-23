@@ -1,68 +1,72 @@
 // For determining random direction...?
-var UnitSphere = new THREE.Sphere(new THREE.Vector3(), 0.5);
+var UnitSphere = new THREE.Sphere(new THREE.Vector3(), 1);
+var minBounds = new THREE.Vector3(-5, -2.5, -0.5);
+var maxBounds = new THREE.Vector3(5, 2.5, 0.5);
 
+/* TextEntity
 
-function Letter( letter ) {
-    // Set our scope and inheritance
-    var scope = this;
+Our basic textural entity:
+    Base class, handles basic agent-based attributes and methods for
+    navigation, steering etc.
 
-    // Setup basic linguistic components
-    var vowels = 'aeiouy';
-    this.char = letter.charAt(0);
-    this.isVowel = vowels.includes( this.char ) ? true : false;
-
+Intended to be inHerited
+*/
+function TextEntity( material ) {
     // Setup our navigation variables
-    this._target = randPoint(10, 5),
     this._width = 4,
     this._height = 4,
     this._depth = 4,
     this.maxspeed = 0.01,
     this.maxforce = 0.1
 
+    // Purely for the sake of explictness
+    this._target = new THREE.Vector3().copy( randPoint(10, 5) )
+
+    this._startPos = new THREE.Vector3();
+
     // position comes free through inheriting from THREE.Sprite
     this.velocity = new THREE.Vector3();
     this.acceleration = new THREE.Vector3();
+    // this.position = new THREE.Vector3();
+    THREE.Sprite.call( this, material );
+    // this.position.copy(randPoint(10, 5) );
 
-    this.t = 0;
-    this.delta = 0.005;
-    if (!LetterMaterials.hasOwnProperty(letter))
-        letter = ' '
-    THREE.Sprite.call( this, LetterMaterials[letter] );
-
-    LetterGroup.add(this);
-    this.position.copy(randPoint(10, 5) );
-}
+};
 
 // Establish inheritance
-Letter.prototype = Object.create( THREE.Sprite.prototype );
-Letter.prototype.constructor = Letter;
-
+TextEntity.prototype = Object.create( THREE.Sprite.prototype );
+TextEntity.prototype.constructor = TextEntity;
 
 //////////////////////////////////////////////////////////////////////
 //   Begin Method definitions
 //////////////////////////////////////////////////////////////////////
 
-Letter.prototype.run = function() {
+TextEntity.prototype.run = function() {
     this.wander();
     this.update();
     // this.border();
 }
 
-Letter.prototype.setTarget = function( t ) {
+TextEntity.prototype.setStartPosition = function( t ) {
     this._target.copy( t );
 };
 
 
-Letter.prototype.applyForce = function(force) {
+TextEntity.prototype.setTarget = function( t ) {
+    this._target.copy( t );
+};
+
+
+TextEntity.prototype.applyForce = function(force) {
     this.acceleration.add(force);
 }
 
-Letter.prototype.setBehavior = function( activity ) {
+TextEntity.prototype.setBehavior = function( activity ) {
     this.behavior = activity || wander ;
 }
 
 //
-Letter.prototype.seek = function() {
+TextEntity.prototype.seek = function() {
     // This is a vector pointing from the location to the target
     var desired = new THREE.Vector3().subVectors(this._target, this.position);   // I THINK this will be fine...
 
@@ -76,16 +80,16 @@ Letter.prototype.seek = function() {
     this.applyForce(steer);
 
 
-    if (this.position.distanceTo(this._target) < 0.001) {
+    // if (this.position.distanceTo(this._target) < 0.001) {
         // Here we will want to 'combine objects to begin to create words'
         // Or, we will 'flee' from objects, etc
-    };
+    // };
 }
 
 
 // Same as Seeking a target with the exception that it object will slow down on
 // approach to target
-Letter.prototype.arrive = function() {
+TextEntity.prototype.arrive = function() {
     // This is a vector pointing from the location to the target
     var desired = new THREE.Vector3().subVectors(this._target, this.position);   // I THINK this will be fine...
 
@@ -106,12 +110,13 @@ Letter.prototype.arrive = function() {
 }
 
 
-Letter.prototype.wander = function() {
+TextEntity.prototype.wander = function() {
     if (this.position.distanceTo(this._target) < 0.01) {
-        // var direction = UnitSphere.clampPoint( randPoint() );
-        // direction.multiplyScalar(Math.random() * 4 - 2);
-        // direction.add( this.position );
-        this._target.copy( randPoint(10, 5) );
+        var direction = UnitSphere.clampPoint( randPoint(10, 5) );
+        direction.multiplyScalar(Math.random() * 5);
+        direction.add( this.position );
+        direction = direction.clamp(minBounds, maxBounds);
+        this._target.copy( direction );
     }
     this.arrive();
 }
@@ -121,7 +126,7 @@ Letter.prototype.wander = function() {
  *  Updates critter behavior state.
  *      Should be run every frame
  **************************/
-Letter.prototype.update = function() {
+TextEntity.prototype.update = function() {
 
     // Update the velocity!
     this.velocity.add(this.acceleration);
@@ -133,6 +138,134 @@ Letter.prototype.update = function() {
     // Reset acceleration to 0 each cycle
     this.acceleration.set(0,0,0);  // could as easily be
 }
+
+
+// Inherits from TextEntity
+function Letter( letter ) {
+
+    // Handle the edge case punctuations like spaces...
+    if (letter == ' ')
+        return;
+
+    // Setup basic linguistic components
+    var vowels = 'aeiouyAEIOUY';
+    var punct = ";:.,?!-()"
+    this.char = letter.charAt(0);
+    this.isVowel = vowels.includes( this.char ) ? true : false;
+
+    // Check to see if the material already exists in the database, if not
+    // add it
+    if (!LetterMaterials.hasOwnProperty(letter)) {
+        var texture = makeLetterTexture( letter );
+        LetterMaterials[letter] = new THREE.SpriteMaterial({ map: texture })
+    }
+
+    // Inherit our Navigation stuffs
+    TextEntity.call( this, LetterMaterials[letter] );
+    if (punct.includes(this.char))
+        OtherGroup.add(this);
+    else
+        LetterGroup.add(this);
+    this.position.copy(randPoint(10, 5) );
+}
+
+// Establish inheritance
+Letter.prototype = Object.create( TextEntity.prototype );
+Letter.prototype.constructor = Letter;
+
+
+
+function Word( string )
+{
+    this.letters = string;
+    this.duration = Date.now();
+    this.isProto = true; // Is considered a proto-word until otherwise noted...
+    this.isFailing = false;  // Determines if its failing as a word or not.
+
+    // Setup our navigation variables
+    this._target = randPoint(10, 5),
+    this._width = 4,
+    this._height = 4,
+    this._depth = 4,
+    this.maxspeed = 0.01,
+    this.maxforce = 0.1
+
+    // position comes free through inheriting from THREE.Sprite
+    this.velocity = new THREE.Vector3();
+    this.acceleration = new THREE.Vector3();
+
+    this.t = 0;
+    this.delta = 0.005;
+
+    var texture = makeLetterTexture( string );
+    var mat = new THREE.SpriteMaterial({ map: texture })
+
+
+    // THREE.Sprite.call( this, LetterMaterials[letter] );
+
+    if (punct.includes(this.char))
+        OtherGroup.add(this);
+    else
+        LetterGroup.add(this);
+    this.position.copy(randPoint(10, 5) );
+
+
+    TextEntity.call(this, mat);
+}
+
+Word.prototype = Object.create( TextEntity.prototype );
+Word.prototype.constructor = Word;
+
+
+
+// Extra special thanks to:
+// http://stackoverflow.com/questions/17134839/how-does-the-map-function-in-processing-work
+function _map(value, istart, istop, ostart, ostop) {
+    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+}
+
+function _limit(vec3, maxLength) {
+    var lengthSquared = vec3.x*vec3.x + vec3.y*vec3.y + vec3.z*vec3.z;
+
+   if( ( lengthSquared > maxLength * maxLength ) && ( lengthSquared > 0 ) ) {
+        var ratio = maxLength / Math.sqrt( lengthSquared );
+        vec3.x *= ratio;
+        vec3.y *= ratio;
+        vec3.z *= ratio;
+    }
+    return vec3;
+}
+
+// function _distance(p1, p2) {
+
+//     var x1 = this.p1.x,
+//         y1 = this.p1.y,
+//         z1 = this.p1.z
+
+//     var x2 = this.p2.x,
+//         y2 = this.p2.y,
+//         z2 = this.p2.z
+
+//     var distance = Math.sqrt( ((x2 - x1)**2) + ((y2 - y1)**2) + ((z2 - z1)**2) );
+//     return distance;
+// }
+
+
+function randPoint(upper, lower) {
+    return new THREE.Vector3( Math.random() * upper - lower,
+                              Math.random() * upper/2 - lower/2,
+                              Math.random() * 2 - 1
+                            )
+}
+
+
+
+
+
+
+
+/*
+Have yet to decide what to do with this one...
 
 Letter.prototype.borders = function() {
     if (this.position.x < -this._width) this.position.x = this._width;
@@ -180,65 +313,4 @@ Letter.prototype.border = function() {
     steer = _limit(steer, this.maxforce);
     this.applyForce(steer);
 }
-
-// var Word = function( string )
-// {
-
-//     var texture = makeLetterTexture( string );
-//     var mat = new THREE.SpriteMaterial({ map: texture })
-
-
-//     THREE.Sprite.call(this, mat);
-
-//     this.velocity = new THREE.Vector3();
-//     this.letters = [];
-//     this.duration = Date.now();
-//     this.isProto = true; // Is considered a proto-word until otherwise noted...
-//     this.isFailing = false;  // Determines if its failing as a word or not.
-// }
-
-// Word.prototype = Object.create( THREE.Sprite.prototype );
-// Word.prototype.constructor = Word;
-
-
-
-// Extra special thanks to:
-// http://stackoverflow.com/questions/17134839/how-does-the-map-function-in-processing-work
-function _map(value, istart, istop, ostart, ostop) {
-    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
-}
-
-function _limit(vec3, maxLength) {
-    var lengthSquared = vec3.x*vec3.x + vec3.y*vec3.y + vec3.z*vec3.z;
-
-   if( ( lengthSquared > maxLength * maxLength ) && ( lengthSquared > 0 ) ) {
-        var ratio = maxLength / Math.sqrt( lengthSquared );
-        vec3.x *= ratio;
-        vec3.y *= ratio;
-        vec3.z *= ratio;
-    }
-    return vec3;
-}
-
-// function _distance(p1, p2) {
-
-//     var x1 = this.p1.x,
-//         y1 = this.p1.y,
-//         z1 = this.p1.z
-
-//     var x2 = this.p2.x,
-//         y2 = this.p2.y,
-//         z2 = this.p2.z
-
-//     var distance = Math.sqrt( ((x2 - x1)**2) + ((y2 - y1)**2) + ((z2 - z1)**2) );
-//     return distance;
-// }
-
-
-function randPoint(upper, lower) {
-    return new THREE.Vector3( Math.random() * upper - lower,
-                              Math.random() * upper/2 - lower/2,
-                              Math.random() * 2 - 1
-                            )
-}
-
+*/
