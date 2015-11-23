@@ -12,7 +12,7 @@ function Letter( letter ) {
     this.isVowel = vowels.includes( this.char ) ? true : false;
 
     // Setup our navigation variables
-    this._target = randPoint(),
+    this._target = randPoint(10, 5),
     this._width = 4,
     this._height = 4,
     this._depth = 4,
@@ -25,8 +25,12 @@ function Letter( letter ) {
 
     this.t = 0;
     this.delta = 0.005;
-
+    if (!LetterMaterials.hasOwnProperty(letter))
+        letter = ' '
     THREE.Sprite.call( this, LetterMaterials[letter] );
+
+    LetterGroup.add(this);
+    this.position.copy(randPoint(10, 5) );
 }
 
 // Establish inheritance
@@ -41,6 +45,7 @@ Letter.prototype.constructor = Letter;
 Letter.prototype.run = function() {
     this.wander();
     this.update();
+    // this.border();
 }
 
 Letter.prototype.setTarget = function( t ) {
@@ -87,8 +92,8 @@ Letter.prototype.arrive = function() {
     var d = desired.length();  // Calculate the magnitude...
     desired.normalize();
 
-    if (d < 0.5) { // if we are less than 1 unit away from our destination
-        var m = _map( d, 0, 1, 0, this.maxspeed);   // slow down!
+    if (d < 0.04) { // if we are less than 1 unit away from our destination
+        var m = _map( d, 0, 0.04, 0, this.maxspeed);   // slow down!
         desired.multiplyScalar(m);
     } else {
         desired.multiplyScalar(this.maxspeed);  // otherwise full speed ahead!
@@ -100,12 +105,13 @@ Letter.prototype.arrive = function() {
     this.applyForce(steer);
 }
 
+
 Letter.prototype.wander = function() {
     if (this.position.distanceTo(this._target) < 0.01) {
         // var direction = UnitSphere.clampPoint( randPoint() );
         // direction.multiplyScalar(Math.random() * 4 - 2);
         // direction.add( this.position );
-        this._target.copy( randPoint() );
+        this._target.copy( randPoint(10, 5) );
     }
     this.arrive();
 }
@@ -128,7 +134,15 @@ Letter.prototype.update = function() {
     this.acceleration.set(0,0,0);  // could as easily be
 }
 
-Letter.prototype.foobar = function() {
+Letter.prototype.borders = function() {
+    if (this.position.x < -this._width) this.position.x = this._width;
+    if (this.position.y < -this._height) this.position.y = this._height;
+    if (this.position.x > this._width) this.position.x = -r;
+    if (this.position.y > height+r) this.position.y = -r;
+  }
+
+Letter.prototype.border = function() {
+    var steer = new THREE.Vector3();
     // Check to ensure we are still within the bounds of our scene
     if (this.position.x > this._width) {
         // console.log("Too close to X", this.position.x);
@@ -140,7 +154,7 @@ Letter.prototype.foobar = function() {
         steer = new THREE.Vector3().subVectors(desired, this.velocity);
     }
 
-    steer = _limit(steer, this.maxforce);
+    var steer = _limit(steer, this.maxforce);
     this.applyForce(steer);
 
     if (this.position.y > this._height) {
@@ -167,8 +181,24 @@ Letter.prototype.foobar = function() {
     this.applyForce(steer);
 }
 
+// var Word = function( string )
+// {
+
+//     var texture = makeLetterTexture( string );
+//     var mat = new THREE.SpriteMaterial({ map: texture })
 
 
+//     THREE.Sprite.call(this, mat);
+
+//     this.velocity = new THREE.Vector3();
+//     this.letters = [];
+//     this.duration = Date.now();
+//     this.isProto = true; // Is considered a proto-word until otherwise noted...
+//     this.isFailing = false;  // Determines if its failing as a word or not.
+// }
+
+// Word.prototype = Object.create( THREE.Sprite.prototype );
+// Word.prototype.constructor = Word;
 
 
 
@@ -190,28 +220,25 @@ function _limit(vec3, maxLength) {
     return vec3;
 }
 
-function randPoint() {
-    return new THREE.Vector3( Math.random() * 8 - 4,
-                              Math.random() * 8 - 4,
-                              Math.random() * 8 - 4
+// function _distance(p1, p2) {
+
+//     var x1 = this.p1.x,
+//         y1 = this.p1.y,
+//         z1 = this.p1.z
+
+//     var x2 = this.p2.x,
+//         y2 = this.p2.y,
+//         z2 = this.p2.z
+
+//     var distance = Math.sqrt( ((x2 - x1)**2) + ((y2 - y1)**2) + ((z2 - z1)**2) );
+//     return distance;
+// }
+
+
+function randPoint(upper, lower) {
+    return new THREE.Vector3( Math.random() * upper - lower,
+                              Math.random() * upper/2 - lower/2,
+                              Math.random() * 2 - 1
                             )
 }
 
-
-
-
-
-// var Word = function( letters, material )
-// {
-//     THREE.Sprite.call(this, params);
-
-//     var scope = this;
-//     this.velocity = new THREE.Vector3();
-//     this.letters = [];
-//     this.duration = Date.now();
-//     this.isProto = true; // Is considered a proto-word until otherwise noted...
-//     this.isFailing = false;  // Determines if its failing as a word or not.
-// }
-
-// Word.prototype = Object.create( THREE.Sprite.prototype );
-// Word.prototype.constructor = Word;
